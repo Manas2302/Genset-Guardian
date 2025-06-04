@@ -1,23 +1,21 @@
 
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { 
-  Power, 
   MapPin, 
   Calendar, 
   Settings,
   Eye,
-  Play,
-  Square,
   Filter,
   Search,
   Plus
 } from "lucide-react";
+import GeneratorControl from "./GeneratorControl";
 
 const FleetOverview = () => {
-  const generators = [
+  const [generators, setGenerators] = useState([
     {
       id: "GEN-001",
       name: "Main Building Generator",
@@ -96,24 +94,27 @@ const FleetOverview = () => {
       nextMaintenance: "2024-06-28",
       efficiency: 92
     }
-  ];
+  ]);
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Running": return "bg-green-100 text-green-800 border-green-200";
-      case "Critical": return "bg-red-100 text-red-800 border-red-200";
-      case "Warning": return "bg-orange-100 text-orange-800 border-orange-200";
-      case "Standby": return "bg-gray-100 text-gray-800 border-gray-200";
-      default: return "bg-gray-100 text-gray-800 border-gray-200";
-    }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "Running": return <Play className="h-3 w-3" />;
-      case "Standby": return <Square className="h-3 w-3" />;
-      default: return <Power className="h-3 w-3" />;
-    }
+  const handleStatusChange = (generatorId: string, newStatus: string) => {
+    setGenerators(prev => 
+      prev.map(gen => {
+        if (gen.id === generatorId) {
+          // Update power output based on status
+          const newPower = newStatus === "Running" ? 
+            Math.floor(gen.maxPower * 0.7) : 0; // 70% load when running
+          
+          return {
+            ...gen,
+            status: newStatus,
+            power: newPower,
+            efficiency: newStatus === "Running" ? 
+              Math.floor(Math.random() * 10 + 85) : 0
+          };
+        }
+        return gen;
+      })
+    );
   };
 
   const statusCounts = {
@@ -195,10 +196,11 @@ const FleetOverview = () => {
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     <CardTitle className="text-lg font-semibold text-gray-900">{gen.id}</CardTitle>
-                    <Badge className={getStatusColor(gen.status)}>
-                      {getStatusIcon(gen.status)}
-                      {gen.status}
-                    </Badge>
+                    <GeneratorControl 
+                      generatorId={gen.id}
+                      currentStatus={gen.status}
+                      onStatusChange={(newStatus) => handleStatusChange(gen.id, newStatus)}
+                    />
                   </div>
                   <p className="text-sm text-gray-600">{gen.name}</p>
                 </div>
