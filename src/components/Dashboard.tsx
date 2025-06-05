@@ -55,52 +55,52 @@ const Dashboard = () => {
     <div className="space-y-6 p-1">
       {/* Top Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white border-0">
+        <Card className="bg-gradient-to-br from-blue-600 to-blue-700 text-white border-0 shadow-xl">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-orange-100 text-xs uppercase tracking-wide">Total Fleet</p>
+                <p className="text-blue-100 text-xs uppercase tracking-wide">Total Fleet</p>
                 <p className="text-2xl font-bold mt-1">{systemStatus.totalUnits}</p>
-                <p className="text-orange-200 text-xs mt-1">{systemStatus.activeUnits} Active</p>
+                <p className="text-blue-200 text-xs mt-1">{systemStatus.activeUnits} Active</p>
+              </div>
+              <div className="bg-blue-500/30 p-2 rounded-lg">
+                <Power className="h-6 w-6 text-blue-100" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-indigo-600 to-indigo-700 text-white border-0 shadow-xl">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-indigo-100 text-xs uppercase tracking-wide">Total Power</p>
+                <p className="text-2xl font-bold mt-1">{systemStatus.totalPower}kW</p>
+                <p className="text-indigo-200 text-xs mt-1">Active Generation</p>
+              </div>
+              <div className="bg-indigo-500/30 p-2 rounded-lg">
+                <TrendingUp className="h-6 w-6 text-indigo-100" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white border-0 shadow-xl">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-orange-100 text-xs uppercase tracking-wide">Active Alerts</p>
+                <p className="text-2xl font-bold mt-1">{systemStatus.criticalAlerts + systemStatus.warningAlerts}</p>
+                <p className="text-orange-200 text-xs mt-1">{systemStatus.criticalAlerts} Critical</p>
               </div>
               <div className="bg-orange-400/30 p-2 rounded-lg">
-                <Power className="h-6 w-6 text-orange-100" />
+                <AlertTriangle className="h-6 w-6 text-orange-100" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="bg-gradient-to-br from-red-500 to-red-600 text-white border-0">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-red-100 text-xs uppercase tracking-wide">Total Power</p>
-                <p className="text-2xl font-bold mt-1">{systemStatus.totalPower}kW</p>
-                <p className="text-red-200 text-xs mt-1">Active Generation</p>
-              </div>
-              <div className="bg-red-400/30 p-2 rounded-lg">
-                <TrendingUp className="h-6 w-6 text-red-100" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-amber-500 to-amber-600 text-white border-0">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-amber-100 text-xs uppercase tracking-wide">Active Alerts</p>
-                <p className="text-2xl font-bold mt-1">{systemStatus.criticalAlerts + systemStatus.warningAlerts}</p>
-                <p className="text-amber-200 text-xs mt-1">{systemStatus.criticalAlerts} Critical</p>
-              </div>
-              <div className="bg-amber-400/30 p-2 rounded-lg">
-                <AlertTriangle className="h-6 w-6 text-amber-100" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white border-0">
+        <Card className="bg-gradient-to-br from-green-500 to-green-600 text-white border-0 shadow-xl">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
@@ -119,7 +119,7 @@ const Dashboard = () => {
       {/* Quick Stats Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {quickStats.map((stat, index) => (
-          <Card key={index} className="border border-orange-200 hover:shadow-md transition-shadow">
+          <Card key={index} className="border-2 border-blue-200 hover:shadow-lg transition-shadow bg-white">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -131,8 +131,8 @@ const Dashboard = () => {
                     </span>
                   </div>
                 </div>
-                <div className="bg-orange-100 p-2 rounded-lg">
-                  <stat.icon className="h-4 w-4 text-orange-600" />
+                <div className="bg-blue-100 p-2 rounded-lg">
+                  <stat.icon className="h-4 w-4 text-blue-600" />
                 </div>
               </div>
             </CardContent>
@@ -142,17 +142,17 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Generator Status */}
-        <Card className="lg:col-span-2 border border-orange-200">
-          <CardHeader className="pb-4">
+        <Card className="lg:col-span-2 border-2 border-blue-200 shadow-lg bg-white">
+          <CardHeader className="pb-4 bg-gradient-to-r from-blue-50 to-indigo-50">
             <CardTitle className="flex items-center gap-2 text-lg text-gray-900">
-              <Activity className="h-5 w-5 text-orange-600" />
-              PowerRental Fleet Status
+              <Activity className="h-5 w-5 text-blue-600" />
+              PowerRental Fleet Status - Perennial Technologies
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {topUnits.map((unit) => (
-                <div key={unit.id} className="p-4 border border-orange-200 rounded-lg hover:bg-orange-50 transition-colors">
+                <div key={unit.id} className="p-4 border-2 border-blue-200 rounded-lg hover:bg-blue-50 transition-colors shadow-sm">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
                       <div className="flex flex-col">
@@ -211,17 +211,17 @@ const Dashboard = () => {
         </Card>
 
         {/* Recent Alerts */}
-        <Card className="border border-orange-200">
-          <CardHeader className="pb-4">
+        <Card className="border-2 border-blue-200 shadow-lg bg-white">
+          <CardHeader className="pb-4 bg-gradient-to-r from-blue-50 to-indigo-50">
             <CardTitle className="flex items-center gap-2 text-lg text-gray-900">
-              <AlertTriangle className="h-5 w-5 text-orange-600" />
+              <AlertTriangle className="h-5 w-5 text-blue-600" />
               Recent Alerts
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">
               {recentAlerts.map((alert) => (
-                <div key={alert.id} className="p-3 border border-orange-200 rounded-lg hover:bg-orange-50 transition-colors">
+                <div key={alert.id} className="p-3 border-2 border-blue-200 rounded-lg hover:bg-blue-50 transition-colors shadow-sm">
                   <div className="flex items-start justify-between mb-2">
                     <Badge 
                       className={

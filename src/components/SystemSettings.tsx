@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -51,42 +50,44 @@ const SystemSettings = () => {
   };
 
   const users = [
-    { id: 1, name: "John Admin", email: "john@company.com", role: "Administrator", status: "Active" },
-    { id: 2, name: "Sarah Tech", email: "sarah@company.com", role: "Technician", status: "Active" },
-    { id: 3, name: "Mike View", email: "mike@company.com", role: "Viewer", status: "Active" },
-    { id: 4, name: "Lisa Manager", email: "lisa@company.com", role: "Manager", status: "Inactive" }
+    { id: 1, name: "Rajesh Kumar", email: "rajesh@perennial.co.in", role: "Administrator", status: "Active" },
+    { id: 2, name: "Priya Sharma", email: "priya@perennial.co.in", role: "Technician", status: "Active" },
+    { id: 3, name: "Amit Patel", email: "amit@perennial.co.in", role: "Viewer", status: "Active" },
+    { id: 4, name: "Sneha Gupta", email: "sneha@perennial.co.in", role: "Manager", status: "Active" },
+    { id: 5, name: "Vikram Singh", email: "vikram@perennial.co.in", role: "Technician", status: "Inactive" },
+    { id: 6, name: "Kavya Nair", email: "kavya@perennial.co.in", role: "Operator", status: "Active" }
   ];
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">System Settings</h2>
-        <Button onClick={handleSave}>
+        <h2 className="text-2xl font-bold">System Settings - Perennial Technologies</h2>
+        <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700">
           <Save className="h-4 w-4 mr-2" />
           Save Changes
         </Button>
       </div>
 
       <Tabs defaultValue="alerts" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5">
-          <TabsTrigger value="alerts" className="flex items-center gap-2">
+        <TabsList className="grid w-full grid-cols-5 bg-white shadow-lg border-2 border-blue-200">
+          <TabsTrigger value="alerts" className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
             <Bell className="h-4 w-4" />
             Alerts
           </TabsTrigger>
-          <TabsTrigger value="system" className="flex items-center gap-2">
+          <TabsTrigger value="system" className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
             <Settings className="h-4 w-4" />
             System
           </TabsTrigger>
-          <TabsTrigger value="network" className="flex items-center gap-2">
+          <TabsTrigger value="network" className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
             <Wifi className="h-4 w-4" />
             Network
           </TabsTrigger>
-          <TabsTrigger value="users" className="flex items-center gap-2">
+          <TabsTrigger value="users" className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
             <Users className="h-4 w-4" />
             Users
           </TabsTrigger>
-          <TabsTrigger value="security" className="flex items-center gap-2">
+          <TabsTrigger value="security" className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
             <Shield className="h-4 w-4" />
             Security
           </TabsTrigger>
@@ -331,11 +332,11 @@ const SystemSettings = () => {
         </TabsContent>
 
         <TabsContent value="users">
-          <Card>
-            <CardHeader>
+          <Card className="border-2 border-blue-200 shadow-lg">
+            <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50">
               <div className="flex justify-between items-center">
-                <CardTitle>User Management</CardTitle>
-                <Button>
+                <CardTitle>User Management - Perennial Technologies</CardTitle>
+                <Button className="bg-blue-600 hover:bg-blue-700">
                   <Users className="h-4 w-4 mr-2" />
                   Add User
                 </Button>
@@ -344,23 +345,23 @@ const SystemSettings = () => {
             <CardContent>
               <div className="space-y-4">
                 {users.map((user) => (
-                  <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg">
+                  <div key={user.id} className="flex items-center justify-between p-4 border-2 border-blue-200 rounded-lg hover:bg-blue-50 transition-colors">
                     <div className="flex-1">
                       <h4 className="font-medium">{user.name}</h4>
                       <p className="text-sm text-gray-600">{user.email}</p>
                     </div>
                     <div className="flex items-center gap-4">
-                      <Badge variant={user.role === "Administrator" ? "default" : "secondary"}>
+                      <Badge variant={user.role === "Administrator" ? "default" : "secondary"} className="bg-blue-100 text-blue-800">
                         {user.role}
                       </Badge>
-                      <Badge variant={user.status === "Active" ? "default" : "secondary"}>
+                      <Badge variant={user.status === "Active" ? "default" : "secondary"} className={user.status === "Active" ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-800"}>
                         {user.status}
                       </Badge>
                       <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
+                        <Button variant="outline" size="sm" className="border-blue-200 hover:bg-blue-50">
                           Edit
                         </Button>
-                        <Button variant="outline" size="sm" disabled={user.role === "Administrator"}>
+                        <Button variant="outline" size="sm" disabled={user.role === "Administrator"} className="border-blue-200 hover:bg-blue-50">
                           Remove
                         </Button>
                       </div>
@@ -374,8 +375,8 @@ const SystemSettings = () => {
 
         <TabsContent value="security">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card>
-              <CardHeader>
+            <Card className="border-2 border-blue-200 shadow-lg">
+              <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50">
                 <CardTitle>Security Settings</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -407,23 +408,31 @@ const SystemSettings = () => {
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
+            <Card className="border-2 border-blue-200 shadow-lg">
+              <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50">
                 <CardTitle>Audit Log</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  <div className="p-3 border rounded text-sm">
+                  <div className="p-3 border-2 border-blue-200 rounded text-sm hover:bg-blue-50">
                     <p className="font-medium">User Login</p>
-                    <p className="text-gray-600">john@company.com - 2024-06-04 14:30</p>
+                    <p className="text-gray-600">rajesh@perennial.co.in - 2024-06-05 14:30</p>
                   </div>
-                  <div className="p-3 border rounded text-sm">
+                  <div className="p-3 border-2 border-blue-200 rounded text-sm hover:bg-blue-50">
                     <p className="font-medium">Settings Changed</p>
-                    <p className="text-gray-600">sarah@company.com - 2024-06-04 13:15</p>
+                    <p className="text-gray-600">priya@perennial.co.in - 2024-06-05 13:15</p>
                   </div>
-                  <div className="p-3 border rounded text-sm">
+                  <div className="p-3 border-2 border-blue-200 rounded text-sm hover:bg-blue-50">
                     <p className="font-medium">Generator Added</p>
-                    <p className="text-gray-600">john@company.com - 2024-06-04 12:00</p>
+                    <p className="text-gray-600">amit@perennial.co.in - 2024-06-05 12:00</p>
+                  </div>
+                  <div className="p-3 border-2 border-blue-200 rounded text-sm hover:bg-blue-50">
+                    <p className="font-medium">Maintenance Scheduled</p>
+                    <p className="text-gray-600">sneha@perennial.co.in - 2024-06-05 11:45</p>
+                  </div>
+                  <div className="p-3 border-2 border-blue-200 rounded text-sm hover:bg-blue-50">
+                    <p className="font-medium">Alert Configuration Updated</p>
+                    <p className="text-gray-600">vikram@perennial.co.in - 2024-06-05 10:30</p>
                   </div>
                 </div>
               </CardContent>

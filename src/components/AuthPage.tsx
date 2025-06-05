@@ -20,6 +20,17 @@ const AuthPage = () => {
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Check if email is from perennial.co.in domain
+    if (!email.endsWith('@perennial.co.in')) {
+      toast({
+        title: "Access Denied",
+        description: "Only Perennial Technologies employees can access this system. Please use your @perennial.co.in email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     setIsLoading(true);
 
     try {
@@ -38,7 +49,7 @@ const AuthPage = () => {
         } else {
           toast({
             title: "Welcome Back!",
-            description: "Successfully logged in to GenSet Guardian",
+            description: "Successfully logged in to PowerRental Control Center",
           });
         }
       } else {
@@ -87,23 +98,24 @@ const AuthPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="bg-blue-600 p-3 rounded-full w-16 h-16 mx-auto mb-4">
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-3 rounded-full w-16 h-16 mx-auto mb-4 shadow-lg">
             <Power className="h-10 w-10 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">GenSet Guardian</h1>
-          <p className="text-gray-600 mt-2">Remote Generator Monitoring & Control</p>
+          <h1 className="text-3xl font-bold text-gray-900">PowerRental Control Center</h1>
+          <p className="text-blue-600 mt-2 font-medium">Perennial Technologies</p>
+          <p className="text-gray-600 text-sm mt-1">Employee Access Portal</p>
         </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>{isLogin ? "Welcome Back" : "Create Account"}</CardTitle>
-            <CardDescription>
+        <Card className="shadow-xl border-2 border-blue-200">
+          <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50">
+            <CardTitle className="text-center text-blue-900">{isLogin ? "Employee Login" : "Employee Registration"}</CardTitle>
+            <CardDescription className="text-center">
               {isLogin 
-                ? "Sign in to monitor and control your generators remotely"
-                : "Register to start managing generators across locations"
+                ? "Sign in with your Perennial Technologies credentials"
+                : "Register with your @perennial.co.in email address"
               }
             </CardDescription>
           </CardHeader>
@@ -120,7 +132,7 @@ const AuthPage = () => {
                       placeholder="Enter your full name"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      className="pl-10"
+                      className="pl-10 border-2 border-blue-200 focus:border-blue-500"
                       required={!isLogin}
                     />
                   </div>
@@ -128,16 +140,16 @@ const AuthPage = () => {
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">Perennial Email</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                   <Input
                     id="email"
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder="name@perennial.co.in"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10"
+                    className="pl-10 border-2 border-blue-200 focus:border-blue-500"
                     required
                   />
                 </div>
@@ -188,7 +200,7 @@ const AuthPage = () => {
 
               <Button 
                 type="submit" 
-                className="w-full" 
+                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 shadow-lg" 
                 disabled={isLoading}
               >
                 {isLoading ? "Processing..." : (isLogin ? "Sign In" : "Create Account")}
@@ -197,13 +209,13 @@ const AuthPage = () => {
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
-                {isLogin ? "Don't have an account?" : "Already have an account?"}
+                {isLogin ? "Need an account?" : "Already have an account?"}
                 <Button
                   variant="link"
                   onClick={() => setIsLogin(!isLogin)}
                   className="ml-2 p-0 h-auto text-blue-600"
                 >
-                  {isLogin ? "Sign up" : "Sign in"}
+                  {isLogin ? "Contact Admin" : "Sign in"}
                 </Button>
               </p>
             </div>
