@@ -96,7 +96,10 @@ const FleetOverview = () => {
     }
   ]);
 
-  const handleStatusChange = (generatorId: string, newStatus: string) => {
+  const handleStatusChange = async (generatorId: string, newStatus: string): Promise<any> => {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
     setGenerators(prev => 
       prev.map(gen => {
         if (gen.id === generatorId) {
@@ -115,6 +118,9 @@ const FleetOverview = () => {
         return gen;
       })
     );
+
+    // Return success response that matches the expected format
+    return { success: true };
   };
 
   const statusCounts = {
@@ -199,7 +205,7 @@ const FleetOverview = () => {
                     <GeneratorControl 
                       generatorId={gen.id}
                       currentStatus={gen.status}
-                      onStatusChange={(newStatus) => handleStatusChange(gen.id, newStatus)}
+                      onStatusChange={handleStatusChange}
                     />
                   </div>
                   <p className="text-sm text-gray-600">{gen.name}</p>
