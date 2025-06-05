@@ -15,7 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 interface GeneratorControlProps {
   generatorId: string;
   currentStatus: string;
-  onStatusChange: (newStatus: string) => void;
+  onStatusChange: (generatorId: string, newStatus: string) => Promise<any>;
 }
 
 const GeneratorControl = ({ generatorId, currentStatus, onStatusChange }: GeneratorControlProps) => {
@@ -26,29 +26,27 @@ const GeneratorControl = ({ generatorId, currentStatus, onStatusChange }: Genera
     setIsLoading(true);
     
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
       let newStatus: string;
       if (currentStatus === "Standby" || currentStatus === "Off") {
         newStatus = "Running";
-        toast({
-          title: "Generator Started",
-          description: `${generatorId} has been successfully started`,
-        });
       } else {
         newStatus = "Standby";
-        toast({
-          title: "Generator Stopped",
-          description: `${generatorId} has been safely stopped`,
-        });
       }
       
-      onStatusChange(newStatus);
-    } catch (error) {
+      const result = await onStatusChange(generatorId, newStatus);
+      
+      if (result.success) {
+        toast({
+          title: "Generator Status Updated",
+          description: `Generator ${newStatus === "Running" ? "started" : "stopped"} successfully`,
+        });
+      } else {
+        throw new Error(result.error || "Failed to update generator status");
+      }
+    } catch (error: any) {
       toast({
         title: "Operation Failed",
-        description: "Failed to change generator status. Please try again.",
+        description: error.message || "Failed to change generator status. Please try again.",
         variant: "destructive",
       });
     } finally {
