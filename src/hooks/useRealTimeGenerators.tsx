@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { generateRealisticGeneratorData, simulateStatusChanges } from "@/utils/realisticDataSimulator";
 
 interface Generator {
   id: string;
@@ -65,7 +66,7 @@ export function useRealTimeGenerators() {
 
     fetchGenerators();
 
-    // Set up real-time subscription
+    // Set up real-time subscription for database changes
     const channel = supabase
       .channel('generators-changes')
       .on(
@@ -103,28 +104,58 @@ export function useRealTimeGenerators() {
       )
       .subscribe();
 
+    // Set up real-time data simulation interval
+    const simulationInterval = setInterval(() => {
+      setGenerators(prev => {
+        const updatedGenerators = prev.map(gen => {
+          // Only update running generators with realistic fluctuations
+          if (gen.status === 'Running' || gen.status === 'Warning') {
+            const realisticData = generateRealisticGeneratorData(gen);
+            return { ...gen, ...realisticData };
+          }
+          return gen;
+        });
+        
+        // Simulate occasional status changes
+        return simulateStatusChanges(updatedGenerators);
+      });
+    }, 3000); // Update every 3 seconds for realistic real-time feel
+
+    // Runtime counter - increment every minute for running generators
+    const runtimeInterval = setInterval(() => {
+      setGenerators(prev => prev.map(gen => ({
+        ...gen,
+        runtime_hours: gen.status === 'Running' ? 
+          gen.runtime_hours + (1/60) : gen.runtime_hours, // Add 1 minute in hours
+        last_seen: new Date().toISOString()
+      })));
+    }, 60000); // Every minute
+
     return () => {
       supabase.removeChannel(channel);
+      clearInterval(simulationInterval);
+      clearInterval(runtimeInterval);
     };
   }, [toast]);
 
   const updateGeneratorStatus = async (id: string, newStatus: string) => {
     try {
+      const generator = generators.find(g => g.id === id);
+      if (!generator) return { success: false, error: "Generator not found" };
+
       const updates: any = { 
         status: newStatus,
         updated_at: new Date().toISOString()
       };
 
-      // Calculate power based on status
-      const generator = generators.find(g => g.id === id);
-      if (generator) {
-        if (newStatus === 'Running') {
-          updates.current_power_kw = Math.floor(generator.max_power_kw * 0.7);
-          updates.efficiency_percent = Math.floor(Math.random() * 10 + 85);
-        } else if (newStatus === 'Standby' || newStatus === 'Off') {
-          updates.current_power_kw = 0;
-          updates.efficiency_percent = 0;
-        }
+      // Calculate realistic values based on new status
+      if (newStatus === 'Running') {
+        const realisticData = generateRealisticGeneratorData({...generator, status: newStatus});
+        Object.assign(updates, realisticData);
+      } else if (newStatus === 'Standby' || newStatus === 'Off') {
+        updates.current_power_kw = 0;
+        updates.efficiency_percent = 0;
+        updates.temperature_celsius = 25 + Math.random() * 10; // Ambient temperature
       }
 
       const { error } = await supabase
