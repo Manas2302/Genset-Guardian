@@ -19,9 +19,9 @@ export const useSecurityAudit = () => {
       const { error } = await supabase.rpc('log_security_event', {
         _action: action,
         _resource_type: resourceType,
-        _resource_id: resourceId,
+        _resource_id: resourceId || null,
         _success: success,
-        _error_message: errorMessage,
+        _error_message: errorMessage || null,
         _metadata: metadata ? JSON.stringify(metadata) : null
       });
 

@@ -18,14 +18,26 @@ const AuthPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
+  // List of authorized email addresses
+  const authorizedEmails = [
+    'manastewari07@gmail.com',
+    'ashitasingh70@gmail.com',
+    'mrinal09032006@gmail.com',
+    'dheer555555@gmail.com'
+  ];
+
+  const isAuthorizedEmail = (email: string) => {
+    return email.endsWith('@perennial.co.in') || authorizedEmails.includes(email);
+  };
+
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Check if email is from perennial.co.in domain or the specific allowed email
-    if (!email.endsWith('@perennial.co.in') && email !== 'manastewari07@gmail.com') {
+    // Check if email is authorized
+    if (!isAuthorizedEmail(email)) {
       toast({
         title: "Access Denied",
-        description: "Only Perennial Technologies employees can access this system. Please use your @perennial.co.in email address.",
+        description: "Only Perennial Technologies employees can access this system. Please use your @perennial.co.in email address or contact your administrator.",
         variant: "destructive",
       });
       return;
@@ -118,8 +130,8 @@ const AuthPage = () => {
             <CardTitle className="text-center text-blue-900 text-2xl">{isLogin ? "Employee Login" : "Employee Registration"}</CardTitle>
             <CardDescription className="text-center text-base">
               {isLogin 
-                ? "Sign in with your Perennial Technologies credentials"
-                : "Register with your @perennial.co.in email address"
+                ? "Sign in with your authorized credentials"
+                : "Register with your authorized email address"
               }
             </CardDescription>
           </CardHeader>
@@ -144,13 +156,13 @@ const AuthPage = () => {
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-base">Perennial Email</Label>
+                <Label htmlFor="email" className="text-base">Authorized Email</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                   <Input
                     id="email"
                     type="email"
-                    placeholder="name@perennial.co.in"
+                    placeholder="your.email@perennial.co.in"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="pl-12 h-12 text-base border-2 border-blue-200 focus:border-blue-500"
