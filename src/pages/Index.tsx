@@ -56,7 +56,7 @@ const Index = () => {
                 <Power className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">PowerRental Control Center</h1>
+                <h1 className="text-xl font-bold text-gray-900">Perennial Control Center</h1>
                 <p className="text-sm text-blue-600 font-medium">Perennial Technologies - Generator Fleet Management</p>
               </div>
             </div>

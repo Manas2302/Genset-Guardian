@@ -21,8 +21,8 @@ const AuthPage = () => {
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Check if email is from perennial.co.in domain
-    if (!email.endsWith('@perennial.co.in')) {
+    // Check if email is from perennial.co.in domain or the specific allowed email
+    if (!email.endsWith('@perennial.co.in') && email !== 'manastewari07@gmail.com') {
       toast({
         title: "Access Denied",
         description: "Only Perennial Technologies employees can access this system. Please use your @perennial.co.in email address.",
@@ -49,7 +49,7 @@ const AuthPage = () => {
         } else {
           toast({
             title: "Welcome Back!",
-            description: "Successfully logged in to PowerRental Control Center",
+            description: "Successfully logged in to Perennial Control Center",
           });
         }
       } else {
@@ -104,7 +104,7 @@ const AuthPage = () => {
           <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-3 rounded-full w-16 h-16 mx-auto mb-4 shadow-lg">
             <Power className="h-10 w-10 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">PowerRental Control Center</h1>
+          <h1 className="text-3xl font-bold text-gray-900">Perennial Control Center</h1>
           <p className="text-blue-600 mt-2 font-medium">Perennial Technologies</p>
           <p className="text-gray-600 text-sm mt-1">Employee Access Portal</p>
         </div>
