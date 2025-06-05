@@ -52,8 +52,12 @@ const Index = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
-              <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-2 rounded-lg shadow-md">
-                <Power className="h-6 w-6 text-white" />
+              <div className="bg-white p-2 rounded-lg shadow-md border-2 border-blue-200">
+                <img 
+                  src="/lovable-uploads/817f8d29-b69c-4193-8c4a-1c168e5a32d2.png" 
+                  alt="Perennial Technologies" 
+                  className="h-8 w-auto"
+                />
               </div>
               <div>
                 <h1 className="text-xl font-bold text-gray-900">Perennial Control Center</h1>

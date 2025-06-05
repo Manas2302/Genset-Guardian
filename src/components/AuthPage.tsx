@@ -101,8 +101,12 @@ const AuthPage = () => {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-3 rounded-full w-16 h-16 mx-auto mb-4 shadow-lg">
-            <Power className="h-10 w-10 text-white" />
+          <div className="bg-white p-3 rounded-full w-16 h-16 mx-auto mb-4 shadow-lg border-2 border-blue-200 flex items-center justify-center">
+            <img 
+              src="/lovable-uploads/817f8d29-b69c-4193-8c4a-1c168e5a32d2.png" 
+              alt="Perennial Technologies" 
+              className="h-10 w-auto"
+            />
           </div>
           <h1 className="text-3xl font-bold text-gray-900">Perennial Control Center</h1>
           <p className="text-blue-600 mt-2 font-medium">Perennial Technologies</p>
