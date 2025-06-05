@@ -30,11 +30,11 @@ const Dashboard = () => {
   };
 
   const recentAlerts = [
-    { id: 1, unit: "GEN-001", type: "Critical", message: "Low fuel level detected", time: "2 min ago", priority: "high" },
-    { id: 2, unit: "GEN-005", type: "Warning", message: "Engine temperature elevated", time: "15 min ago", priority: "medium" },
-    { id: 3, unit: "GEN-003", type: "Warning", message: "Maintenance due in 5 days", time: "1 hour ago", priority: "low" },
-    { id: 4, unit: "GEN-007", type: "Info", message: "Generator started successfully", time: "2 hours ago", priority: "low" },
-    { id: 5, unit: "GEN-002", type: "Warning", message: "Load threshold exceeded", time: "3 hours ago", priority: "medium" }
+    { id: 1, unit: "PR-GEN-001", type: "Critical", message: "Low fuel level detected", time: "2 min ago", priority: "high" },
+    { id: 2, unit: "PR-GEN-005", type: "Warning", message: "Engine temperature elevated", time: "15 min ago", priority: "medium" },
+    { id: 3, unit: "PR-GEN-003", type: "Warning", message: "Maintenance due in 5 days", time: "1 hour ago", priority: "low" },
+    { id: 4, unit: "PR-GEN-007", type: "Info", message: "Generator started successfully", time: "2 hours ago", priority: "low" },
+    { id: 5, unit: "PR-GEN-002", type: "Warning", message: "Load threshold exceeded", time: "3 hours ago", priority: "medium" }
   ];
 
   const quickStats = [
@@ -45,26 +45,56 @@ const Dashboard = () => {
   ];
 
   const topUnits = [
-    { id: "GEN-001", status: "Critical", power: 195, fuel: 15, temp: 85, load: 78, location: "Building A" },
-    { id: "GEN-002", status: "Running", power: 220, fuel: 85, temp: 72, load: 65, location: "Building B" },
-    { id: "GEN-003", status: "Running", power: 205, fuel: 92, temp: 68, load: 72, location: "Data Center" },
-    { id: "GEN-005", status: "Warning", power: 150, fuel: 45, temp: 76, load: 58, location: "Warehouse" }
+    { id: "PR-GEN-001", status: "Critical", power: 195, fuel: 15, temp: 85, load: 78, location: "Mumbai Site A" },
+    { id: "PR-GEN-002", status: "Running", power: 220, fuel: 85, temp: 72, load: 65, location: "Delhi Industrial" },
+    { id: "PR-GEN-003", status: "Running", power: 205, fuel: 92, temp: 68, load: 72, location: "Bangalore Tech Park" },
+    { id: "PR-GEN-005", status: "Warning", power: 150, fuel: 45, temp: 76, load: 58, location: "Chennai Factory" }
   ];
 
   return (
     <div className="space-y-6 p-1">
       {/* Top Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="bg-gradient-to-br from-blue-500 to-blue-600 text-white border-0">
+        <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white border-0">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-blue-100 text-xs uppercase tracking-wide">Total Units</p>
+                <p className="text-orange-100 text-xs uppercase tracking-wide">Total Fleet</p>
                 <p className="text-2xl font-bold mt-1">{systemStatus.totalUnits}</p>
-                <p className="text-blue-200 text-xs mt-1">{systemStatus.activeUnits} Active</p>
+                <p className="text-orange-200 text-xs mt-1">{systemStatus.activeUnits} Active</p>
               </div>
-              <div className="bg-blue-400/30 p-2 rounded-lg">
-                <Power className="h-6 w-6 text-blue-100" />
+              <div className="bg-orange-400/30 p-2 rounded-lg">
+                <Power className="h-6 w-6 text-orange-100" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-red-500 to-red-600 text-white border-0">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-red-100 text-xs uppercase tracking-wide">Total Power</p>
+                <p className="text-2xl font-bold mt-1">{systemStatus.totalPower}kW</p>
+                <p className="text-red-200 text-xs mt-1">Active Generation</p>
+              </div>
+              <div className="bg-red-400/30 p-2 rounded-lg">
+                <TrendingUp className="h-6 w-6 text-red-100" />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-gradient-to-br from-amber-500 to-amber-600 text-white border-0">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-amber-100 text-xs uppercase tracking-wide">Active Alerts</p>
+                <p className="text-2xl font-bold mt-1">{systemStatus.criticalAlerts + systemStatus.warningAlerts}</p>
+                <p className="text-amber-200 text-xs mt-1">{systemStatus.criticalAlerts} Critical</p>
+              </div>
+              <div className="bg-amber-400/30 p-2 rounded-lg">
+                <AlertTriangle className="h-6 w-6 text-amber-100" />
               </div>
             </div>
           </CardContent>
@@ -74,42 +104,12 @@ const Dashboard = () => {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-green-100 text-xs uppercase tracking-wide">Total Power</p>
-                <p className="text-2xl font-bold mt-1">{systemStatus.totalPower}kW</p>
-                <p className="text-green-200 text-xs mt-1">Active Generation</p>
+                <p className="text-green-100 text-xs uppercase tracking-wide">Fleet Efficiency</p>
+                <p className="text-2xl font-bold mt-1">{systemStatus.avgEfficiency}%</p>
+                <p className="text-green-200 text-xs mt-1">System Average</p>
               </div>
               <div className="bg-green-400/30 p-2 rounded-lg">
-                <TrendingUp className="h-6 w-6 text-green-100" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-orange-500 to-orange-600 text-white border-0">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-orange-100 text-xs uppercase tracking-wide">Alerts</p>
-                <p className="text-2xl font-bold mt-1">{systemStatus.criticalAlerts + systemStatus.warningAlerts}</p>
-                <p className="text-orange-200 text-xs mt-1">{systemStatus.criticalAlerts} Critical</p>
-              </div>
-              <div className="bg-orange-400/30 p-2 rounded-lg">
-                <AlertTriangle className="h-6 w-6 text-orange-100" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-purple-500 to-purple-600 text-white border-0">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-purple-100 text-xs uppercase tracking-wide">Efficiency</p>
-                <p className="text-2xl font-bold mt-1">{systemStatus.avgEfficiency}%</p>
-                <p className="text-purple-200 text-xs mt-1">System Average</p>
-              </div>
-              <div className="bg-purple-400/30 p-2 rounded-lg">
-                <Battery className="h-6 w-6 text-purple-100" />
+                <Battery className="h-6 w-6 text-green-100" />
               </div>
             </div>
           </CardContent>
@@ -119,7 +119,7 @@ const Dashboard = () => {
       {/* Quick Stats Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {quickStats.map((stat, index) => (
-          <Card key={index} className="border border-gray-200">
+          <Card key={index} className="border border-orange-200 hover:shadow-md transition-shadow">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div>
@@ -131,8 +131,8 @@ const Dashboard = () => {
                     </span>
                   </div>
                 </div>
-                <div className="bg-gray-100 p-2 rounded-lg">
-                  <stat.icon className="h-4 w-4 text-gray-600" />
+                <div className="bg-orange-100 p-2 rounded-lg">
+                  <stat.icon className="h-4 w-4 text-orange-600" />
                 </div>
               </div>
             </CardContent>
@@ -142,17 +142,17 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Generator Status */}
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 border border-orange-200">
           <CardHeader className="pb-4">
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <Activity className="h-5 w-5 text-blue-600" />
-              Generator Status
+            <CardTitle className="flex items-center gap-2 text-lg text-gray-900">
+              <Activity className="h-5 w-5 text-orange-600" />
+              PowerRental Fleet Status
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {topUnits.map((unit) => (
-                <div key={unit.id} className="p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                <div key={unit.id} className="p-4 border border-orange-200 rounded-lg hover:bg-orange-50 transition-colors">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
                       <div className="flex flex-col">
@@ -211,9 +211,9 @@ const Dashboard = () => {
         </Card>
 
         {/* Recent Alerts */}
-        <Card>
+        <Card className="border border-orange-200">
           <CardHeader className="pb-4">
-            <CardTitle className="flex items-center gap-2 text-lg">
+            <CardTitle className="flex items-center gap-2 text-lg text-gray-900">
               <AlertTriangle className="h-5 w-5 text-orange-600" />
               Recent Alerts
             </CardTitle>
@@ -221,7 +221,7 @@ const Dashboard = () => {
           <CardContent>
             <div className="space-y-3">
               {recentAlerts.map((alert) => (
-                <div key={alert.id} className="p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                <div key={alert.id} className="p-3 border border-orange-200 rounded-lg hover:bg-orange-50 transition-colors">
                   <div className="flex items-start justify-between mb-2">
                     <Badge 
                       className={

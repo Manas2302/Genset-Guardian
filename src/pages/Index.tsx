@@ -14,7 +14,8 @@ import {
   Clock,
   Wrench,
   LogOut,
-  Terminal
+  Terminal,
+  Zap
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import AuthPage from "@/components/AuthPage";
@@ -33,8 +34,8 @@ const Index = () => {
   // Show loading while checking auth
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600"></div>
       </div>
     );
   }
@@ -45,29 +46,29 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-white shadow-sm border-b border-orange-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-3">
-              <div className="bg-blue-600 p-2 rounded-lg">
-                <Power className="h-6 w-6 text-white" />
+              <div className="bg-gradient-to-r from-orange-600 to-red-600 p-2 rounded-lg">
+                <Zap className="h-6 w-6 text-white" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">GenSet Guardian</h1>
-                <p className="text-sm text-gray-500">Remote Monitoring & Control System</p>
+                <h1 className="text-xl font-bold text-gray-900">PowerRental Control Center</h1>
+                <p className="text-sm text-orange-600 font-medium">Generator Fleet Management System</p>
               </div>
             </div>
             <div className="flex items-center space-x-4">
               <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
                 <CheckCircle className="h-3 w-3 mr-1" />
-                System Online
+                Fleet Online
               </Badge>
               <div className="text-sm text-gray-600">
                 Welcome, {user.email}
               </div>
-              <Button variant="ghost" size="sm" onClick={signOut}>
+              <Button variant="ghost" size="sm" onClick={signOut} className="hover:bg-orange-50">
                 <LogOut className="h-4 w-4" />
               </Button>
             </div>
@@ -78,32 +79,32 @@ const Index = () => {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7 bg-white shadow-sm">
-            <TabsTrigger value="dashboard" className="flex items-center gap-2">
+          <TabsList className="grid w-full grid-cols-7 bg-white shadow-sm border border-orange-200">
+            <TabsTrigger value="dashboard" className="flex items-center gap-2 data-[state=active]:bg-orange-100 data-[state=active]:text-orange-800">
               <Gauge className="h-4 w-4" />
               Dashboard
             </TabsTrigger>
-            <TabsTrigger value="fleet" className="flex items-center gap-2">
+            <TabsTrigger value="fleet" className="flex items-center gap-2 data-[state=active]:bg-orange-100 data-[state=active]:text-orange-800">
               <Power className="h-4 w-4" />
               Fleet
             </TabsTrigger>
-            <TabsTrigger value="command" className="flex items-center gap-2">
+            <TabsTrigger value="command" className="flex items-center gap-2 data-[state=active]:bg-orange-100 data-[state=active]:text-orange-800">
               <Terminal className="h-4 w-4" />
               Commands
             </TabsTrigger>
-            <TabsTrigger value="alerts" className="flex items-center gap-2">
+            <TabsTrigger value="alerts" className="flex items-center gap-2 data-[state=active]:bg-orange-100 data-[state=active]:text-orange-800">
               <AlertTriangle className="h-4 w-4" />
               Alerts
             </TabsTrigger>
-            <TabsTrigger value="maintenance" className="flex items-center gap-2">
+            <TabsTrigger value="maintenance" className="flex items-center gap-2 data-[state=active]:bg-orange-100 data-[state=active]:text-orange-800">
               <Wrench className="h-4 w-4" />
               Maintenance
             </TabsTrigger>
-            <TabsTrigger value="analytics" className="flex items-center gap-2">
+            <TabsTrigger value="analytics" className="flex items-center gap-2 data-[state=active]:bg-orange-100 data-[state=active]:text-orange-800">
               <Battery className="h-4 w-4" />
               Analytics
             </TabsTrigger>
-            <TabsTrigger value="settings" className="flex items-center gap-2">
+            <TabsTrigger value="settings" className="flex items-center gap-2 data-[state=active]:bg-orange-100 data-[state=active]:text-orange-800">
               <Settings className="h-4 w-4" />
               Settings
             </TabsTrigger>
