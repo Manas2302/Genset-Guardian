@@ -2,12 +2,16 @@
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 
+// Define specific types for the parameters
+type ResourceType = 'generator' | 'generator_command' | 'authentication' | string;
+type ActionType = string;
+
 export const useSecurityAudit = () => {
   const { user } = useAuth();
 
   const logSecurityEvent = async (
-    action: string,
-    resourceType: string,
+    action: ActionType,
+    resourceType: ResourceType,
     resourceId?: string,
     success: boolean = true,
     errorMessage?: string,
