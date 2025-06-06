@@ -13,6 +13,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useSecurityAudit } from "@/hooks/useSecurityAudit";
+import { supabase } from "@/integrations/supabase/client";
 
 interface SecurityEnhancedGeneratorControlProps {
   generatorId: string;
@@ -57,7 +58,7 @@ const SecurityEnhancedGeneratorControl = ({
     
     try {
       let newStatus: string;
-      let commandType: string;
+      let commandType: 'start' | 'stop';
 
       if (currentStatus === "Standby" || currentStatus === "Off") {
         newStatus = "Running";
@@ -68,21 +69,42 @@ const SecurityEnhancedGeneratorControl = ({
       }
       
       // Log the command attempt
-      await logGeneratorCommand(generatorId, commandType, true);
+      logGeneratorCommand(generatorId, commandType, true);
       
-      const result = await onStatusChange(generatorId, newStatus);
+      // Call the edge function directly
+      const { data, error } = await supabase.functions.invoke('generator-command', {
+        body: {
+          generatorId,
+          command: commandType,
+          metadata: {
+            user_agent: navigator.userAgent,
+            initiated_from: 'generator_control_panel'
+          }
+        }
+      });
       
-      if (result.success) {
+      console.log("Generator command response:", data);
+      
+      if (error) {
+        throw new Error(error.message || "Failed to send generator command");
+      }
+      
+      if (data && data.success) {
         toast({
           title: "Generator Status Updated",
           description: `Generator ${newStatus === "Running" ? "started" : "stopped"} successfully`,
         });
+        
+        // Update local state to reflect the change
+        await onStatusChange(generatorId, newStatus);
       } else {
-        throw new Error(result.error || "Failed to update generator status");
+        throw new Error(data?.error || "Failed to update generator status");
       }
     } catch (error: any) {
+      console.error("Generator command error:", error);
+      
       // Log the failed command
-      await logGeneratorCommand(generatorId, currentStatus === "Running" ? "stop" : "start", false, error.message);
+      logGeneratorCommand(generatorId, currentStatus === "Running" ? "stop" : "start", false, error.message);
       
       toast({
         title: "Operation Failed",

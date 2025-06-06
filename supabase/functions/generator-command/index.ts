@@ -34,8 +34,9 @@ serve(async (req) => {
     const { data: { user }, error: authError } = await supabaseClient.auth.getUser();
     
     if (authError || !user) {
+      console.error("Authentication error:", authError);
       return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
+        JSON.stringify({ error: 'Unauthorized', details: authError?.message }),
         { 
           status: 401, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -43,9 +44,11 @@ serve(async (req) => {
       );
     }
 
-    const { generatorId, command, metadata }: CommandRequest = await req.json();
+    const requestData = await req.json();
+    const { generatorId, command, metadata }: CommandRequest = requestData;
 
     console.log(`Processing command: ${command} for generator: ${generatorId} by user: ${user.id}`);
+    console.log("Request data:", JSON.stringify(requestData));
 
     // Get generator details
     const { data: generator, error: genError } = await supabaseClient
@@ -55,8 +58,9 @@ serve(async (req) => {
       .single();
 
     if (genError || !generator) {
+      console.error("Generator not found error:", genError);
       return new Response(
-        JSON.stringify({ error: 'Generator not found' }),
+        JSON.stringify({ error: 'Generator not found', details: genError?.message }),
         { 
           status: 404, 
           headers: { ...corsHeaders, 'Content-Type': 'application/json' }
@@ -78,6 +82,7 @@ serve(async (req) => {
       .single();
 
     if (cmdError) {
+      console.error("Command creation error:", cmdError);
       throw cmdError;
     }
 
@@ -91,30 +96,32 @@ serve(async (req) => {
 
     switch (command) {
       case 'start':
-        if (generator.status === 'Standby' || generator.status === 'Off') {
-          newStatus = 'Running';
+        if (generator.status === "Standby" || generator.status === "Off") {
+          newStatus = "Running";
           newPowerKw = Math.floor(generator.max_power_kw * 0.7);
           newEfficiency = Math.floor(Math.random() * 10 + 85);
         }
         break;
       case 'stop':
-        if (generator.status === 'Running') {
-          newStatus = 'Standby';
+        if (generator.status === "Running") {
+          newStatus = "Standby";
           newPowerKw = 0;
           newEfficiency = 0;
         }
         break;
       case 'restart':
-        newStatus = 'Running';
+        newStatus = "Running";
         newPowerKw = Math.floor(generator.max_power_kw * 0.7);
         newEfficiency = Math.floor(Math.random() * 10 + 85);
         break;
       case 'maintenance_mode':
-        newStatus = 'Maintenance';
+        newStatus = "Maintenance";
         newPowerKw = 0;
         newEfficiency = 0;
         break;
     }
+
+    console.log(`Changing generator status from ${generator.status} to ${newStatus}`);
 
     // Update generator status
     const { error: updateError } = await supabaseClient
@@ -128,6 +135,7 @@ serve(async (req) => {
       .eq('id', generatorId);
 
     if (updateError) {
+      console.error("Generator update error:", updateError);
       throw updateError;
     }
 
@@ -157,7 +165,7 @@ serve(async (req) => {
         }
       });
 
-    console.log(`Command ${command} completed successfully for generator ${generatorId}`);
+    console.log(`Command ${command} completed successfully for generator ${generatorId}. New status: ${newStatus}`);
 
     return new Response(
       JSON.stringify({
