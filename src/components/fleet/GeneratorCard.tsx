@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -18,7 +17,7 @@ import {
   Power,
   Gauge
 } from "lucide-react";
-import GeneratorControl from "../GeneratorControl";
+import SecurityEnhancedGeneratorControl from "../SecurityEnhancedGeneratorControl";
 
 interface Generator {
   id: string;
@@ -52,10 +51,11 @@ interface Generator {
 
 interface GeneratorCardProps {
   generator: Generator;
-  onStatusChange: (generatorId: string, newStatus: string) => void;
+  onStatusChange: (generatorId: string, newStatus: string) => Promise<any>;
+  userRole?: string;
 }
 
-const GeneratorCard = ({ generator: gen, onStatusChange }: GeneratorCardProps) => {
+const GeneratorCard = ({ generator: gen, onStatusChange, userRole = 'viewer' }: GeneratorCardProps) => {
   const getMaintenanceStatus = (nextMaintenanceDate: string) => {
     const today = new Date();
     const maintenanceDate = new Date(nextMaintenanceDate);
@@ -90,10 +90,11 @@ const GeneratorCard = ({ generator: gen, onStatusChange }: GeneratorCardProps) =
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
               <CardTitle className="text-lg font-semibold text-gray-900">{gen.serial_number}</CardTitle>
-              <GeneratorControl 
+              <SecurityEnhancedGeneratorControl 
                 generatorId={gen.id}
                 currentStatus={gen.status}
                 onStatusChange={handleStatusChange}
+                userRole={userRole}
               />
             </div>
             <p className="text-sm text-gray-600 font-medium">{gen.name}</p>

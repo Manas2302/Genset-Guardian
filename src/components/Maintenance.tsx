@@ -1,10 +1,11 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Wrench, 
   Calendar as CalendarIcon, 
@@ -17,8 +18,7 @@ import {
 
 const Maintenance = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
-
-  const maintenanceSchedule = [
+  const [maintenanceSchedule, setMaintenanceSchedule] = useState([
     {
       id: 1,
       unit: "GEN-001",
@@ -26,7 +26,7 @@ const Maintenance = () => {
       status: "Overdue",
       scheduledDate: "2024-05-30",
       lastCompleted: "2024-04-30",
-      technician: "John Smith",
+      technician: "Rajesh Sharma",
       priority: "High",
       estimatedDuration: "2 hours"
     },
@@ -37,7 +37,7 @@ const Maintenance = () => {
       status: "Due Soon", 
       scheduledDate: "2024-06-10",
       lastCompleted: "2024-03-10",
-      technician: "Sarah Johnson",
+      technician: "Priya Patel",
       priority: "Medium",
       estimatedDuration: "1 hour"
     },
@@ -48,7 +48,7 @@ const Maintenance = () => {
       status: "Scheduled",
       scheduledDate: "2024-06-15",
       lastCompleted: "2024-03-15",
-      technician: "Mike Wilson",
+      technician: "Amit Kumar",
       priority: "Medium",
       estimatedDuration: "3 hours"
     },
@@ -59,7 +59,7 @@ const Maintenance = () => {
       status: "Completed",
       scheduledDate: "2024-06-01",
       lastCompleted: "2024-06-01",
-      technician: "Lisa Brown",
+      technician: "Sunita Singh",
       priority: "Low",
       estimatedDuration: "30 minutes"
     },
@@ -70,21 +70,21 @@ const Maintenance = () => {
       status: "Due Soon",
       scheduledDate: "2024-06-08",
       lastCompleted: "2024-03-08",
-      technician: "David Lee",
+      technician: "Vikram Gupta",
       priority: "High",
       estimatedDuration: "4 hours"
     }
-  ];
+  ]);
 
-  const maintenanceHistory = [
+  const [maintenanceHistory] = useState([
     {
       id: 1,
       unit: "GEN-006",
       type: "Engine Overhaul",
       completedDate: "2024-05-28",
-      technician: "Expert Team",
+      technician: "Ravi Mehta (Lead)",
       duration: "8 hours",
-      cost: "$2,500",
+      cost: "₹2,50,000",
       notes: "Complete engine overhaul including valve adjustment and timing calibration."
     },
     {
@@ -92,9 +92,9 @@ const Maintenance = () => {
       unit: "GEN-002",
       type: "Spark Plug Replacement",
       completedDate: "2024-05-25",
-      technician: "John Smith",
+      technician: "Anjali Desai",
       duration: "1.5 hours",
-      cost: "$150",
+      cost: "₹15,000",
       notes: "Replaced all spark plugs and cleaned combustion chambers."
     },
     {
@@ -102,18 +102,64 @@ const Maintenance = () => {
       unit: "GEN-001",
       type: "Fuel Filter Change",
       completedDate: "2024-05-20",
-      technician: "Sarah Johnson",
+      technician: "Manoj Agarwal",
       duration: "45 minutes",
-      cost: "$75",
+      cost: "₹7,500",
       notes: "Routine fuel filter replacement and fuel system check."
     }
-  ];
+  ]);
+
+  const { toast } = useToast();
+
+  // Real-time updates simulation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMaintenanceSchedule(prev => {
+        return prev.map(item => {
+          // Simulate status changes for real-time feeling
+          if (Math.random() < 0.05) { // 5% chance every 10 seconds
+            const statuses = ["Scheduled", "In Progress", "Completed"];
+            const currentIndex = statuses.indexOf(item.status);
+            if (currentIndex < statuses.length - 1) {
+              const newStatus = statuses[currentIndex + 1];
+              
+              // Show toast notification for status changes
+              if (newStatus === "In Progress") {
+                toast({
+                  title: "Maintenance Started",
+                  description: `${item.technician} started ${item.type} on ${item.unit}`,
+                });
+              } else if (newStatus === "Completed") {
+                toast({
+                  title: "Maintenance Completed",
+                  description: `${item.type} completed on ${item.unit}`,
+                });
+              }
+              
+              return { ...item, status: newStatus };
+            }
+          }
+          return item;
+        });
+      });
+    }, 10000); // Update every 10 seconds
+
+    return () => clearInterval(interval);
+  }, [toast]);
+
+  const handleScheduleMaintenance = () => {
+    toast({
+      title: "Schedule Maintenance",
+      description: "Maintenance scheduling interface would open here",
+    });
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "Overdue": return "bg-red-100 text-red-800 border-red-200";
       case "Due Soon": return "bg-orange-100 text-orange-800 border-orange-200";
       case "Scheduled": return "bg-blue-100 text-blue-800 border-blue-200";
+      case "In Progress": return "bg-purple-100 text-purple-800 border-purple-200";
       case "Completed": return "bg-green-100 text-green-800 border-green-200";
       default: return "bg-gray-100 text-gray-800 border-gray-200";
     }
@@ -131,6 +177,7 @@ const Maintenance = () => {
   const overdueItems = maintenanceSchedule.filter(item => item.status === "Overdue");
   const dueSoonItems = maintenanceSchedule.filter(item => item.status === "Due Soon");
   const scheduledItems = maintenanceSchedule.filter(item => item.status === "Scheduled");
+  const inProgressItems = maintenanceSchedule.filter(item => item.status === "In Progress");
 
   return (
     <div className="space-y-6">
@@ -142,7 +189,7 @@ const Maintenance = () => {
             <Download className="h-4 w-4 mr-2" />
             Export
           </Button>
-          <Button size="sm">
+          <Button size="sm" onClick={handleScheduleMaintenance}>
             <Plus className="h-4 w-4 mr-2" />
             Schedule Maintenance
           </Button>
@@ -150,7 +197,7 @@ const Maintenance = () => {
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         <Card className="bg-red-50 border-red-200">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -171,6 +218,18 @@ const Maintenance = () => {
                 <p className="text-2xl font-bold text-orange-700">{dueSoonItems.length}</p>
               </div>
               <Clock className="h-6 w-6 text-orange-500" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="bg-purple-50 border-purple-200">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-purple-600 text-sm font-medium">In Progress</p>
+                <p className="text-2xl font-bold text-purple-700">{inProgressItems.length}</p>
+              </div>
+              <Wrench className="h-6 w-6 text-purple-500" />
             </div>
           </CardContent>
         </Card>
@@ -205,7 +264,7 @@ const Maintenance = () => {
         <div className="lg:col-span-2">
           <Tabs defaultValue="schedule" className="space-y-4">
             <TabsList>
-              <TabsTrigger value="schedule">Schedule</TabsTrigger>
+              <TabsTrigger value="schedule">Live Schedule</TabsTrigger>
               <TabsTrigger value="history">History</TabsTrigger>
             </TabsList>
 
@@ -214,7 +273,8 @@ const Maintenance = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Wrench className="h-5 w-5" />
-                    Maintenance Schedule
+                    Real-time Maintenance Schedule
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" title="Live updates"></div>
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -244,7 +304,7 @@ const Maintenance = () => {
                               Reschedule
                             </Button>
                             <Button size="sm" variant={item.status === "Overdue" ? "destructive" : "default"}>
-                              {item.status === "Completed" ? "View" : "Start"}
+                              {item.status === "Completed" ? "View" : item.status === "In Progress" ? "Monitor" : "Start"}
                             </Button>
                           </div>
                         </div>
@@ -315,11 +375,11 @@ const Maintenance = () => {
                 <div className="space-y-2">
                   <div className="p-2 bg-orange-50 rounded text-sm">
                     <p className="font-medium">GEN-005 - Fuel System</p>
-                    <p className="text-gray-600">June 8, 2024</p>
+                    <p className="text-gray-600">June 8, 2024 - Vikram Gupta</p>
                   </div>
                   <div className="p-2 bg-blue-50 rounded text-sm">
                     <p className="font-medium">GEN-002 - Air Filter</p>
-                    <p className="text-gray-600">June 10, 2024</p>
+                    <p className="text-gray-600">June 10, 2024 - Priya Patel</p>
                   </div>
                 </div>
               </div>

@@ -1,11 +1,13 @@
 
 import { useRealTimeGenerators } from "@/hooks/useRealTimeGenerators";
+import { useAuth } from "@/hooks/useAuth";
 import FleetHeader from "./fleet/FleetHeader";
 import FleetStats from "./fleet/FleetStats";
 import FleetGrid from "./fleet/FleetGrid";
 
 const RealTimeFleetOverview = () => {
   const { generators, loading, updateGeneratorStatus } = useRealTimeGenerators();
+  const { user } = useAuth();
 
   if (loading) {
     return (
@@ -17,7 +19,7 @@ const RealTimeFleetOverview = () => {
   }
 
   const handleStatusChange = async (generatorId: string, newStatus: string) => {
-    await updateGeneratorStatus(generatorId, newStatus);
+    return await updateGeneratorStatus(generatorId, newStatus);
   };
 
   const statusCounts = {
@@ -29,11 +31,18 @@ const RealTimeFleetOverview = () => {
     maintenance: generators.filter(g => g.status === "Maintenance").length,
   };
 
+  // Determine user role - you might want to get this from a user profile table
+  const userRole = user?.email?.includes('@perennial.co.in') ? 'admin' : 'operator';
+
   return (
     <div className="space-y-6 p-1">
       <FleetHeader />
       <FleetStats statusCounts={statusCounts} />
-      <FleetGrid generators={generators} onStatusChange={handleStatusChange} />
+      <FleetGrid 
+        generators={generators} 
+        onStatusChange={handleStatusChange}
+        userRole={userRole}
+      />
     </div>
   );
 };

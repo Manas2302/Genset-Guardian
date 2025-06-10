@@ -33,25 +33,19 @@ interface Generator {
 
 interface FleetGridProps {
   generators: Generator[];
-  onStatusChange: (generatorId: string, newStatus: string) => void;
+  onStatusChange: (generatorId: string, newStatus: string) => Promise<any>;
+  userRole?: string;
 }
 
-const FleetGrid = ({ generators, onStatusChange }: FleetGridProps) => {
-  if (generators.length === 0) {
-    return (
-      <div className="text-center py-12">
-        <p className="text-gray-500">No generators found. Add some generators to get started.</p>
-      </div>
-    );
-  }
-
+const FleetGrid = ({ generators, onStatusChange, userRole = 'viewer' }: FleetGridProps) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
       {generators.map((generator) => (
-        <GeneratorCard
-          key={generator.id}
-          generator={generator}
+        <GeneratorCard 
+          key={generator.id} 
+          generator={generator} 
           onStatusChange={onStatusChange}
+          userRole={userRole}
         />
       ))}
     </div>
