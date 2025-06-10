@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,13 +11,13 @@ import { supabase } from "@/integrations/supabase/client";
 const NotificationTester = () => {
   const { toast } = useToast();
   const [emailData, setEmailData] = useState({
-    to: "admin@perennial.co.in",
+    to: "atultew@gmail.com",
     subject: "Generator Alert Test",
     message: "This is a test email notification from the Generator Monitoring System."
   });
 
   const [smsData, setSmsData] = useState({
-    to: "+91 9876543210",
+    to: "+91 9108395173",
     message: "ALERT: Generator G001 fuel level critical (15%). Immediate attention required."
   });
 
