@@ -27,8 +27,25 @@ const handler = async (req: Request): Promise<Response> => {
     const authToken = Deno.env.get("TWILIO_AUTH_TOKEN");
     const fromNumber = Deno.env.get("TWILIO_PHONE_NUMBER");
 
-    if (!accountSid || !authToken || !fromNumber) {
-      throw new Error("Missing Twilio configuration");
+    // Better error handling for missing configuration
+    const missingVars = [];
+    if (!accountSid) missingVars.push("TWILIO_ACCOUNT_SID");
+    if (!authToken) missingVars.push("TWILIO_AUTH_TOKEN");
+    if (!fromNumber) missingVars.push("TWILIO_PHONE_NUMBER");
+
+    if (missingVars.length > 0) {
+      const errorMessage = `Missing Twilio configuration: ${missingVars.join(", ")}`;
+      console.error(errorMessage);
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          error: `SMS service not configured. Missing: ${missingVars.join(", ")}` 
+        }),
+        {
+          status: 500,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
     }
 
     // Twilio API call
@@ -51,7 +68,8 @@ const handler = async (req: Request): Promise<Response> => {
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.message || "Failed to send SMS");
+      console.error("Twilio API error:", result);
+      throw new Error(result.message || `Twilio API error: ${response.status}`);
     }
 
     console.log("SMS sent successfully:", result);
