@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ import {
   TestTube
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import NotificationTester from "./NotificationTester";
 
 const SystemSettings = () => {
   const { toast } = useToast();
@@ -70,10 +72,14 @@ const SystemSettings = () => {
       </div>
 
       <Tabs defaultValue="alerts" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-5 bg-white shadow-lg border-2 border-blue-200">
+        <TabsList className="grid w-full grid-cols-6 bg-white shadow-lg border-2 border-blue-200">
           <TabsTrigger value="alerts" className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
             <Bell className="h-4 w-4" />
             Alerts
+          </TabsTrigger>
+          <TabsTrigger value="notifications" className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
+            <TestTube className="h-4 w-4" />
+            Test Notifications
           </TabsTrigger>
           <TabsTrigger value="system" className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
             <Settings className="h-4 w-4" />
@@ -92,6 +98,10 @@ const SystemSettings = () => {
             Security
           </TabsTrigger>
         </TabsList>
+
+        <TabsContent value="notifications">
+          <NotificationTester />
+        </TabsContent>
 
         <TabsContent value="alerts">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

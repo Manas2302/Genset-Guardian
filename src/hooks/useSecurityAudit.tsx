@@ -11,23 +11,22 @@ export const useSecurityAudit = () => {
     resourceId?: string,
     success: boolean = true,
     errorMessage?: string,
-    metadata?: any
+    metadata?: Record<string, any>
   ) => {
     if (!user) return;
 
     try {
-      const { error } = await supabase.rpc('log_security_event', {
-        _action: action,
-        _resource_type: resourceType,
-        _resource_id: resourceId || null,
-        _success: success,
-        _error_message: errorMessage || null,
-        _metadata: metadata ? JSON.stringify(metadata) : null
+      // For now, just log to console since the RPC function doesn't exist
+      console.log('Security Event:', {
+        action,
+        resourceType,
+        resourceId,
+        success,
+        errorMessage,
+        metadata,
+        userId: user.id,
+        timestamp: new Date().toISOString()
       });
-
-      if (error) {
-        console.warn('Failed to log security event:', error);
-      }
     } catch (error) {
       console.warn('Security audit logging failed:', error);
     }
