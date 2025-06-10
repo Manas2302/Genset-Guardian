@@ -6,7 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { Mail, MessageSquare, Send, TestTube } from "lucide-react";
+import { Mail, MessageSquare, Send, TestTube, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const NotificationTester = () => {
   const { toast } = useToast();
@@ -21,50 +22,83 @@ const NotificationTester = () => {
     message: "ALERT: Generator G001 fuel level critical (15%). Immediate attention required."
   });
 
+  const [emailLoading, setEmailLoading] = useState(false);
+  const [smsLoading, setSmsLoading] = useState(false);
+
   const sendTestEmail = async () => {
     try {
-      // Simulate email sending
+      setEmailLoading(true);
       console.log('Sending test email:', emailData);
       
+      const { data, error } = await supabase.functions.invoke('send-email', {
+        body: {
+          to: emailData.to,
+          subject: emailData.subject,
+          message: emailData.message
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (!data.success) {
+        throw new Error(data.error);
+      }
+
       toast({
         title: "Email Sent Successfully",
         description: `Test email sent to ${emailData.to}`,
       });
-
-      // In a real implementation, you would call your email service here
-      // For example, using a Supabase edge function with Resend
-    } catch (error) {
+    } catch (error: any) {
+      console.error('Email error:', error);
       toast({
         title: "Email Failed",
-        description: "Failed to send test email",
+        description: error.message || "Failed to send test email",
         variant: "destructive",
       });
+    } finally {
+      setEmailLoading(false);
     }
   };
 
   const sendTestSMS = async () => {
     try {
-      // Simulate SMS sending
+      setSmsLoading(true);
       console.log('Sending test SMS:', smsData);
       
+      const { data, error } = await supabase.functions.invoke('send-sms', {
+        body: {
+          to: smsData.to,
+          message: smsData.message
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (!data.success) {
+        throw new Error(data.error);
+      }
+
       toast({
         title: "SMS Sent Successfully",
         description: `Test SMS sent to ${smsData.to}`,
       });
-
-      // In a real implementation, you would call your SMS service here
-      // For example, using Twilio via a Supabase edge function
-    } catch (error) {
+    } catch (error: any) {
+      console.error('SMS error:', error);
       toast({
         title: "SMS Failed",
-        description: "Failed to send test SMS",
+        description: error.message || "Failed to send test SMS",
         variant: "destructive",
       });
+    } finally {
+      setSmsLoading(false);
     }
   };
 
-  const sendCriticalAlert = () => {
-    // Simulate a critical alert that triggers both email and SMS
+  const sendCriticalAlert = async () => {
     const alertData = {
       generatorId: "G001",
       alertType: "CRITICAL",
@@ -74,10 +108,37 @@ const NotificationTester = () => {
 
     console.log('Critical Alert Triggered:', alertData);
     
-    toast({
-      title: "Critical Alert Triggered",
-      description: "Email and SMS notifications sent to all administrators",
-    });
+    // Send both email and SMS for critical alerts
+    try {
+      const emailPromise = supabase.functions.invoke('send-email', {
+        body: {
+          to: emailData.to,
+          subject: `CRITICAL ALERT: Generator ${alertData.generatorId}`,
+          message: `Critical alert for Generator ${alertData.generatorId} at ${alertData.location}: ${alertData.message}`
+        }
+      });
+
+      const smsPromise = supabase.functions.invoke('send-sms', {
+        body: {
+          to: smsData.to,
+          message: `CRITICAL: Generator ${alertData.generatorId} - ${alertData.message}`
+        }
+      });
+
+      await Promise.all([emailPromise, smsPromise]);
+
+      toast({
+        title: "Critical Alert Triggered",
+        description: "Email and SMS notifications sent to all administrators",
+      });
+    } catch (error: any) {
+      console.error('Critical alert error:', error);
+      toast({
+        title: "Alert Failed",
+        description: "Failed to send critical alert notifications",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -129,9 +190,13 @@ const NotificationTester = () => {
               />
             </div>
 
-            <Button onClick={sendTestEmail} className="w-full">
-              <Send className="h-4 w-4 mr-2" />
-              Send Test Email
+            <Button onClick={sendTestEmail} className="w-full" disabled={emailLoading}>
+              {emailLoading ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Send className="h-4 w-4 mr-2" />
+              )}
+              {emailLoading ? "Sending..." : "Send Test Email"}
             </Button>
           </CardContent>
         </Card>
@@ -152,6 +217,7 @@ const NotificationTester = () => {
                 type="tel"
                 value={smsData.to}
                 onChange={(e) => setSmsData(prev => ({ ...prev, to: e.target.value }))}
+                placeholder="+91 9876543210"
               />
             </div>
 
@@ -169,9 +235,13 @@ const NotificationTester = () => {
               </p>
             </div>
 
-            <Button onClick={sendTestSMS} className="w-full">
-              <Send className="h-4 w-4 mr-2" />
-              Send Test SMS
+            <Button onClick={sendTestSMS} className="w-full" disabled={smsLoading}>
+              {smsLoading ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <Send className="h-4 w-4 mr-2" />
+              )}
+              {smsLoading ? "Sending..." : "Send Test SMS"}
             </Button>
           </CardContent>
         </Card>
