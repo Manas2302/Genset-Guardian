@@ -18,7 +18,7 @@ import { supabase } from "@/integrations/supabase/client";
 interface SecurityEnhancedGeneratorControlProps {
   generatorId: string;
   currentStatus: string;
-  onStatusChange: (generatorId: string, newStatus: string) => Promise<any>;
+  onStatusChange?: (generatorId: string, newStatus: string) => Promise<any>;
   userRole?: string;
 }
 
