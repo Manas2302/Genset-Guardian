@@ -95,8 +95,10 @@ const SecurityEnhancedGeneratorControl = ({
           description: `Generator ${newStatus === "Running" ? "started" : "stopped"} successfully`,
         });
         
-        // Update local state to reflect the change
-        await onStatusChange(generatorId, newStatus);
+        // Only call onStatusChange if it's provided
+        if (onStatusChange) {
+          await onStatusChange(generatorId, newStatus);
+        }
       } else {
         throw new Error(data?.error || "Failed to update generator status");
       }

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { generateRealisticGeneratorData, simulateStatusChanges } from "@/utils/realisticDataSimulator";
+import { indianLocations, getRandomLocation, generateSerialNumber } from "@/utils/indianLocationData";
 
 interface Generator {
   id: string;
@@ -33,39 +34,73 @@ interface Generator {
   updated_at: string;
 }
 
+const createMockGenerators = (): Generator[] => {
+  const categories = ['apartments', 'mining', 'construction'] as const;
+  const generators: Generator[] = [];
+  const generatorsPerCategory = 10; // 30 total generators, 10 per category
+  
+  categories.forEach((category, categoryIndex) => {
+    for (let i = 0; i < generatorsPerCategory; i++) {
+      const location = getRandomLocation(category);
+      const serialNumber = generateSerialNumber(category, i);
+      
+      const generator: Generator = {
+        id: `${categoryIndex * generatorsPerCategory + i + 1}`,
+        name: location.name,
+        model: category === 'apartments' ? 'Cummins QSK23' : 
+               category === 'mining' ? 'Caterpillar C32' : 'Volvo Penta TAD1642GE',
+        serial_number: serialNumber,
+        location: location.name,
+        city: location.city,
+        state: location.state,
+        country: 'India',
+        latitude: Math.random() * (35 - 8) + 8, // India latitude range
+        longitude: Math.random() * (97 - 68) + 68, // India longitude range
+        max_power_kw: category === 'apartments' ? Math.floor(Math.random() * 200 + 100) : 
+                     category === 'mining' ? Math.floor(Math.random() * 500 + 300) : 
+                     Math.floor(Math.random() * 300 + 150),
+        current_power_kw: 0,
+        fuel_level_percent: Math.floor(Math.random() * 60 + 40),
+        status: ['Running', 'Standby', 'Warning'][Math.floor(Math.random() * 3)],
+        runtime_hours: Math.random() * 1000,
+        last_maintenance_date: new Date(Date.now() - Math.random() * 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        next_maintenance_date: new Date(Date.now() + Math.random() * 60 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        efficiency_percent: Math.floor(Math.random() * 20 + 80),
+        temperature_celsius: Math.random() * 30 + 50,
+        voltage: 220 + (Math.random() - 0.5) * 20,
+        frequency_hz: 50 + (Math.random() - 0.5) * 0.4,
+        oil_pressure_bar: Math.random() * 2 + 3,
+        coolant_level_percent: Math.floor(Math.random() * 40 + 60),
+        is_online: Math.random() > 0.1, // 90% online
+        last_seen: new Date().toISOString(),
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      };
+      
+      // Set current power based on status
+      if (generator.status === 'Running') {
+        generator.current_power_kw = Math.floor(generator.max_power_kw * (0.5 + Math.random() * 0.4));
+      }
+      
+      generators.push(generator);
+    }
+  });
+  
+  return generators;
+};
+
 export function useRealTimeGenerators() {
   const [generators, setGenerators] = useState<Generator[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
-    // Fetch initial data
-    const fetchGenerators = async () => {
-      try {
-        const { data, error } = await supabase
-          .from('generators')
-          .select('*')
-          .order('name');
+    // Initialize with mock data since we don't have real database data
+    const mockGenerators = createMockGenerators();
+    setGenerators(mockGenerators);
+    setLoading(false);
 
-        if (error) {
-          throw error;
-        }
-
-        setGenerators(data || []);
-      } catch (error: any) {
-        toast({
-          title: "Error Loading Generators",
-          description: error.message,
-          variant: "destructive",
-        });
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchGenerators();
-
-    // Set up real-time subscription for database changes
+    // Set up real-time subscription for database changes (keeping for future use)
     const channel = supabase
       .channel('generators-changes')
       .on(
