@@ -37,12 +37,15 @@ interface Generator {
 const createMockGenerators = (): Generator[] => {
   const categories = ['apartments', 'mining', 'construction'] as const;
   const generators: Generator[] = [];
-  const generatorsPerCategory = 10; // 30 total generators, 10 per category
+  const generatorsPerCategory = 4; // 12 total generators, 4 per category
   
   categories.forEach((category, categoryIndex) => {
     for (let i = 0; i < generatorsPerCategory; i++) {
-      const location = getRandomLocation(category);
+      const location = getRandomLocation(category, i);
       const serialNumber = generateSerialNumber(category, i);
+      
+      // Calculate max_power_kw from KVA (assuming 0.8 power factor)
+      const maxPowerKw = Math.floor(location.kva * 0.8);
       
       const generator: Generator = {
         id: `${categoryIndex * generatorsPerCategory + i + 1}`,
@@ -56,9 +59,7 @@ const createMockGenerators = (): Generator[] => {
         country: 'India',
         latitude: Math.random() * (35 - 8) + 8, // India latitude range
         longitude: Math.random() * (97 - 68) + 68, // India longitude range
-        max_power_kw: category === 'apartments' ? Math.floor(Math.random() * 200 + 100) : 
-                     category === 'mining' ? Math.floor(Math.random() * 500 + 300) : 
-                     Math.floor(Math.random() * 300 + 150),
+        max_power_kw: maxPowerKw,
         current_power_kw: 0,
         fuel_level_percent: Math.floor(Math.random() * 60 + 40),
         status: ['Running', 'Standby', 'Warning'][Math.floor(Math.random() * 3)],

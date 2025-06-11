@@ -76,7 +76,13 @@ const GeneratorCard = ({ generator: gen, onStatusChange, userRole = 'viewer' }: 
     return `${minutes}m`;
   };
 
-  const maintenanceStatus = getMaintenanceStatus(gen.next_maintenance_date);
+  const getKVARating = (maxPowerKw: number) => {
+    // Convert kW to KVA assuming 0.8 power factor
+    return Math.round(maxPowerKw / 0.8);
+  };
+
+  const kvaRating = getKVARating(gen.max_power_kw);
+
   const loadPercentage = Math.round((gen.current_power_kw / gen.max_power_kw) * 100);
 
   return (
@@ -93,7 +99,11 @@ const GeneratorCard = ({ generator: gen, onStatusChange, userRole = 'viewer' }: 
               />
             </div>
             <p className="text-sm text-gray-600 font-medium">{gen.name}</p>
-            <p className="text-xs text-gray-500">{gen.model}</p>
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <span>{gen.model}</span>
+              <span>•</span>
+              <span className="font-medium text-blue-600">{kvaRating} KVA</span>
+            </div>
           </div>
         </div>
       </CardHeader>
@@ -130,7 +140,10 @@ const GeneratorCard = ({ generator: gen, onStatusChange, userRole = 'viewer' }: 
               <Power className="h-4 w-4" />
               Power Output
             </span>
-            <span className="text-sm font-bold text-gray-900">{gen.current_power_kw}/{gen.max_power_kw}kW</span>
+            <div className="text-right">
+              <div className="text-sm font-bold text-gray-900">{gen.current_power_kw}/{gen.max_power_kw}kW</div>
+              <div className="text-xs text-blue-600">{kvaRating} KVA</div>
+            </div>
           </div>
           <Progress value={loadPercentage} className="h-3 mb-2" />
           <div className="grid grid-cols-3 gap-2 text-xs">
@@ -297,3 +310,5 @@ const GeneratorCard = ({ generator: gen, onStatusChange, userRole = 'viewer' }: 
 };
 
 export default GeneratorCard;
+
+</initial_code>
