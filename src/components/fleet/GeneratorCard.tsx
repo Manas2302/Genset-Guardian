@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -82,7 +83,7 @@ const GeneratorCard = ({ generator: gen, onStatusChange, userRole = 'viewer' }: 
   };
 
   const kvaRating = getKVARating(gen.max_power_kw);
-
+  const maintenanceStatus = getMaintenanceStatus(gen.next_maintenance_date);
   const loadPercentage = Math.round((gen.current_power_kw / gen.max_power_kw) * 100);
 
   return (
@@ -310,5 +311,3 @@ const GeneratorCard = ({ generator: gen, onStatusChange, userRole = 'viewer' }: 
 };
 
 export default GeneratorCard;
-
-</initial_code>
