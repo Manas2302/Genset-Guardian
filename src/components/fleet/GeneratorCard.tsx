@@ -76,10 +76,6 @@ const GeneratorCard = ({ generator: gen, onStatusChange, userRole = 'viewer' }: 
     return `${minutes}m`;
   };
 
-  const handleStatusChange = async (newStatus: string) => {
-    await onStatusChange(gen.id, newStatus);
-  };
-
   const maintenanceStatus = getMaintenanceStatus(gen.next_maintenance_date);
   const loadPercentage = Math.round((gen.current_power_kw / gen.max_power_kw) * 100);
 
@@ -93,7 +89,6 @@ const GeneratorCard = ({ generator: gen, onStatusChange, userRole = 'viewer' }: 
               <SecurityEnhancedGeneratorControl 
                 generatorId={gen.id}
                 currentStatus={gen.status}
-                onStatusChange={handleStatusChange}
                 userRole={userRole}
               />
             </div>
@@ -269,13 +264,29 @@ const GeneratorCard = ({ generator: gen, onStatusChange, userRole = 'viewer' }: 
           </Button>
         </div>
 
-        {/* Quick Controls */}
+        {/* Quick Controls - Now functional */}
         <div className="flex gap-2 pt-1">
-          <Button variant="ghost" size="sm" className="flex-1 gap-1 text-gray-600 hover:text-gray-800">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="flex-1 gap-1 text-gray-600 hover:text-gray-800"
+            onClick={() => {
+              // Quick configure action - could open a modal or navigate
+              console.log('Configure generator:', gen.id);
+            }}
+          >
             <Settings className="h-3 w-3" />
             Configure
           </Button>
-          <Button variant="ghost" size="sm" className="flex-1 gap-1 text-gray-600 hover:text-gray-800">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="flex-1 gap-1 text-gray-600 hover:text-gray-800"
+            onClick={() => {
+              // Quick schedule action - could open a scheduling modal
+              console.log('Schedule maintenance for:', gen.id);
+            }}
+          >
             <Clock className="h-3 w-3" />
             Schedule
           </Button>

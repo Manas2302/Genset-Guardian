@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -138,53 +137,5 @@ export function useRealTimeGenerators() {
     };
   }, [toast]);
 
-  const updateGeneratorStatus = async (id: string, newStatus: string) => {
-    try {
-      const generator = generators.find(g => g.id === id);
-      if (!generator) return { success: false, error: "Generator not found" };
-
-      const updates: any = { 
-        status: newStatus,
-        updated_at: new Date().toISOString()
-      };
-
-      // Calculate realistic values based on new status
-      if (newStatus === 'Running') {
-        const realisticData = generateRealisticGeneratorData({...generator, status: newStatus});
-        Object.assign(updates, realisticData);
-      } else if (newStatus === 'Standby' || newStatus === 'Off') {
-        updates.current_power_kw = 0;
-        updates.efficiency_percent = 0;
-        updates.temperature_celsius = 25 + Math.random() * 10; // Ambient temperature
-      }
-
-      const { error } = await supabase
-        .from('generators')
-        .update(updates)
-        .eq('id', id);
-
-      if (error) {
-        throw error;
-      }
-
-      // Log the command
-      await supabase.from('generator_logs').insert({
-        generator_id: id,
-        event_type: 'status_change',
-        message: `Generator status changed to ${newStatus}`,
-        severity: 'info'
-      });
-
-      return { success: true };
-    } catch (error: any) {
-      toast({
-        title: "Failed to Update Generator",
-        description: error.message,
-        variant: "destructive",
-      });
-      return { success: false, error: error.message };
-    }
-  };
-
-  return { generators, loading, updateGeneratorStatus };
+  return { generators, loading };
 }

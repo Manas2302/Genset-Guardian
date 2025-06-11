@@ -6,7 +6,7 @@ import FleetStats from "./fleet/FleetStats";
 import FleetGrid from "./fleet/FleetGrid";
 
 const RealTimeFleetOverview = () => {
-  const { generators, loading, updateGeneratorStatus } = useRealTimeGenerators();
+  const { generators, loading } = useRealTimeGenerators();
   const { user } = useAuth();
 
   if (loading) {
@@ -18,9 +18,7 @@ const RealTimeFleetOverview = () => {
     );
   }
 
-  const handleStatusChange = async (generatorId: string, newStatus: string) => {
-    return await updateGeneratorStatus(generatorId, newStatus);
-  };
+  // Remove handleStatusChange function since it's no longer needed
 
   const statusCounts = {
     total: generators.length,
@@ -31,7 +29,6 @@ const RealTimeFleetOverview = () => {
     maintenance: generators.filter(g => g.status === "Maintenance").length,
   };
 
-  // Determine user role - you might want to get this from a user profile table
   const userRole = user?.email?.includes('@perennial.co.in') ? 'admin' : 'operator';
 
   return (
@@ -40,7 +37,7 @@ const RealTimeFleetOverview = () => {
       <FleetStats statusCounts={statusCounts} />
       <FleetGrid 
         generators={generators} 
-        onStatusChange={handleStatusChange}
+        onStatusChange={async () => ({ success: true })} // Dummy function since SecurityEnhancedGeneratorControl handles it
         userRole={userRole}
       />
     </div>
