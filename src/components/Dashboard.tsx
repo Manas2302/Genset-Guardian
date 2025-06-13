@@ -15,41 +15,55 @@ import {
   Zap,
   Timer
 } from "lucide-react";
+import { useRealTimeGenerators } from "@/hooks/useRealTimeGenerators";
 
 const Dashboard = () => {
-  // Mock real-time data
+  const { generators, loading } = useRealTimeGenerators();
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
+
+  // Calculate system status from real generator data
   const systemStatus = {
-    totalUnits: 12,
-    activeUnits: 10,
-    criticalAlerts: 2,
-    warningAlerts: 5,
-    totalPower: 2400,
-    avgEfficiency: 92.5,
-    totalRuntime: "1,245h",
+    totalUnits: generators.length,
+    activeUnits: generators.filter(g => g.status === 'Running').length,
+    criticalAlerts: generators.filter(g => g.status === 'Critical').length,
+    warningAlerts: generators.filter(g => g.status === 'Warning').length,
+    totalPower: generators.reduce((sum, g) => sum + g.current_power_kw, 0),
+    avgEfficiency: generators.length > 0 ? Math.round(generators.reduce((sum, g) => sum + g.efficiency_percent, 0) / generators.length * 10) / 10 : 0,
+    totalRuntime: Math.round(generators.reduce((sum, g) => sum + g.runtime_hours, 0)) + "h",
     fuelConsumption: "1,850L"
   };
 
   const recentAlerts = [
-    { id: 1, unit: "PR-GEN-001", type: "Critical", message: "Low fuel level detected", time: "2 min ago", priority: "high" },
-    { id: 2, unit: "PR-GEN-005", type: "Warning", message: "Engine temperature elevated", time: "15 min ago", priority: "medium" },
-    { id: 3, unit: "PR-GEN-003", type: "Warning", message: "Maintenance due in 5 days", time: "1 hour ago", priority: "low" },
-    { id: 4, unit: "PR-GEN-007", type: "Info", message: "Generator started successfully", time: "2 hours ago", priority: "low" },
-    { id: 5, unit: "PR-GEN-002", type: "Warning", message: "Load threshold exceeded", time: "3 hours ago", priority: "medium" }
+    { id: 1, unit: generators[0]?.serial_number || "PR-GEN-001", type: "Critical", message: "Low fuel level detected", time: "2 min ago", priority: "high" },
+    { id: 2, unit: generators[1]?.serial_number || "PR-GEN-005", type: "Warning", message: "Engine temperature elevated", time: "15 min ago", priority: "medium" },
+    { id: 3, unit: generators[2]?.serial_number || "PR-GEN-003", type: "Warning", message: "Maintenance due in 5 days", time: "1 hour ago", priority: "low" },
+    { id: 4, unit: generators[3]?.serial_number || "PR-GEN-007", type: "Info", message: "Generator started successfully", time: "2 hours ago", priority: "low" },
+    { id: 5, unit: generators[4]?.serial_number || "PR-GEN-002", type: "Warning", message: "Load threshold exceeded", time: "3 hours ago", priority: "medium" }
   ];
 
   const quickStats = [
-    { label: "Power Output", value: "2,400 kW", change: "+5.2%", trend: "up", icon: Zap },
-    { label: "Fuel Efficiency", value: "92.5%", change: "+2.1%", trend: "up", icon: Droplets },
+    { label: "Power Output", value: `${systemStatus.totalPower} kW`, change: "+5.2%", trend: "up", icon: Zap },
+    { label: "Fuel Efficiency", value: `${systemStatus.avgEfficiency}%`, change: "+2.1%", trend: "up", icon: Droplets },
     { label: "Avg Load", value: "67%", change: "-1.8%", trend: "down", icon: Gauge },
     { label: "Uptime", value: "99.8%", change: "+0.3%", trend: "up", icon: Timer }
   ];
 
-  const topUnits = [
-    { id: "PR-GEN-001", status: "Critical", power: 195, fuel: 15, temp: 85, load: 78, location: "Mumbai Site A" },
-    { id: "PR-GEN-002", status: "Running", power: 220, fuel: 85, temp: 72, load: 65, location: "Delhi Industrial" },
-    { id: "PR-GEN-003", status: "Running", power: 205, fuel: 92, temp: 68, load: 72, location: "Bangalore Tech Park" },
-    { id: "PR-GEN-005", status: "Warning", power: 150, fuel: 45, temp: 76, load: 58, location: "Chennai Factory" }
-  ];
+  const topUnits = generators.slice(0, 4).map(gen => ({
+    id: gen.serial_number,
+    status: gen.status,
+    power: gen.current_power_kw,
+    fuel: gen.fuel_level_percent,
+    temp: Math.round(gen.temperature_celsius),
+    load: Math.round((gen.current_power_kw / gen.max_power_kw) * 100),
+    location: `${gen.city}, ${gen.state}`
+  }));
 
   return (
     <div className="space-y-6 p-1">
