@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -25,8 +24,10 @@ import {
   Battery, 
   Gauge,
   Download,
-  Calendar
+  Calendar,
+  Shield
 } from "lucide-react";
+import SecureLoadAnalytics from "./SecureLoadAnalytics";
 
 const Analytics = () => {
   // Mock data for charts
@@ -150,6 +151,10 @@ const Analytics = () => {
           <TabsTrigger value="fuel">Fuel Consumption</TabsTrigger>
           <TabsTrigger value="utilization">Utilization</TabsTrigger>
           <TabsTrigger value="maintenance">Maintenance Costs</TabsTrigger>
+          <TabsTrigger value="secure" className="gap-2">
+            <Shield className="h-3 w-3" />
+            Secure Analytics
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="power">
@@ -321,6 +326,10 @@ const Analytics = () => {
               </ResponsiveContainer>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="secure">
+          <SecureLoadAnalytics />
         </TabsContent>
       </Tabs>
     </div>
