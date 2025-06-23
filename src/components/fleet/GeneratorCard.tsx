@@ -96,6 +96,7 @@ const GeneratorCard = ({ generator: gen, onStatusChange, userRole = 'viewer' }: 
               <SecurityEnhancedGeneratorControl 
                 generatorId={gen.id}
                 currentStatus={gen.status}
+                onStatusChange={onStatusChange}
                 userRole={userRole}
               />
             </div>
