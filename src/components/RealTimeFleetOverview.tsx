@@ -1,4 +1,5 @@
 
+import { useState } from "react";
 import { useRealTimeGenerators } from "@/hooks/useRealTimeGenerators";
 import { useAuth } from "@/hooks/useAuth";
 import FleetHeader from "./fleet/FleetHeader";
@@ -6,8 +7,14 @@ import FleetStats from "./fleet/FleetStats";
 import FleetGrid from "./fleet/FleetGrid";
 
 const RealTimeFleetOverview = () => {
-  const { generators, loading } = useRealTimeGenerators();
+  const { generators: originalGenerators, loading } = useRealTimeGenerators();
+  const [generators, setGenerators] = useState(originalGenerators);
   const { user } = useAuth();
+
+  // Update local state when original generators change
+  React.useEffect(() => {
+    setGenerators(originalGenerators);
+  }, [originalGenerators]);
 
   if (loading) {
     return (
@@ -18,7 +25,28 @@ const RealTimeFleetOverview = () => {
     );
   }
 
-  // Remove handleStatusChange function since it's no longer needed
+  const handleStatusChange = async (generatorId: string, newStatus: string): Promise<any> => {
+    // Update local state immediately for better UX
+    setGenerators(prev => 
+      prev.map(gen => {
+        if (gen.id === generatorId) {
+          const newPower = newStatus === "Running" ? 
+            Math.floor(gen.max_power_kw * (0.5 + Math.random() * 0.3)) : 0;
+          
+          return {
+            ...gen,
+            status: newStatus,
+            current_power_kw: newPower,
+            efficiency_percent: newStatus === "Running" ? 
+              Math.floor(Math.random() * 15 + 80) : 0
+          };
+        }
+        return gen;
+      })
+    );
+
+    return { success: true };
+  };
 
   const statusCounts = {
     total: generators.length,
@@ -37,7 +65,7 @@ const RealTimeFleetOverview = () => {
       <FleetStats statusCounts={statusCounts} />
       <FleetGrid 
         generators={generators} 
-        onStatusChange={async () => ({ success: true })} // Dummy function since SecurityEnhancedGeneratorControl handles it
+        onStatusChange={handleStatusChange}
         userRole={userRole}
       />
     </div>
