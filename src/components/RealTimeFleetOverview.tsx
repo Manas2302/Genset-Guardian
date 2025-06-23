@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRealTimeGenerators } from "@/hooks/useRealTimeGenerators";
 import { useAuth } from "@/hooks/useAuth";
 import FleetHeader from "./fleet/FleetHeader";
@@ -12,7 +12,7 @@ const RealTimeFleetOverview = () => {
   const { user } = useAuth();
 
   // Update local state when original generators change
-  React.useEffect(() => {
+  useEffect(() => {
     setGenerators(originalGenerators);
   }, [originalGenerators]);
 
