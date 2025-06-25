@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -24,6 +25,7 @@ import { useAuth } from "@/hooks/useAuth";
 import AuthPage from "@/components/AuthPage";
 import Dashboard from "@/components/Dashboard";
 import RealTimeFleetOverview from "@/components/RealTimeFleetOverview";
+import FleetOverview from "@/components/FleetOverview";
 import Alerts from "@/components/Alerts";
 import Maintenance from "@/components/Maintenance";
 import Analytics from "@/components/Analytics";
@@ -48,40 +50,6 @@ const Index = () => {
   if (!user) {
     return <AuthPage />;
   }
-
-  const menuItems = [
-    { id: "dashboard", label: "Dashboard", icon: <BarChart3 className="h-4 w-4" /> },
-    { id: "fleet", label: "Fleet Overview", icon: <Zap className="h-4 w-4" /> },
-    { id: "real-time", label: "Real-Time Fleet", icon: <Activity className="h-4 w-4" /> },
-    { id: "predictive", label: "Predictive Maintenance", icon: <Wrench className="h-4 w-4" /> },
-    { id: "analytics", label: "Analytics", icon: <TrendingUp className="h-4 w-4" /> },
-    { id: "alerts", label: "Alerts", icon: <AlertTriangle className="h-4 w-4" /> },
-    { id: "maintenance", label: "Maintenance", icon: <Settings className="h-4 w-4" /> },
-    { id: "settings", label: "System Settings", icon: <Cog className="h-4 w-4" /> }
-  ];
-
-  const renderContent = () => {
-    switch (activeView) {
-      case "dashboard":
-        return <Dashboard />;
-      case "fleet":
-        return <FleetOverview />;
-      case "real-time":
-        return <RealTimeFleetOverview />;
-      case "predictive":
-        return <PredictiveMaintenance />;
-      case "analytics":
-        return <Analytics />;
-      case "alerts":
-        return <Alerts />;
-      case "maintenance":
-        return <Maintenance />;
-      case "settings":
-        return <SystemSettings />;
-      default:
-        return <Dashboard />;
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
@@ -121,7 +89,7 @@ const Index = () => {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7 bg-white shadow-lg border-2 border-blue-200 rounded-xl">
+          <TabsList className="grid w-full grid-cols-8 bg-white shadow-lg border-2 border-blue-200 rounded-xl">
             <TabsTrigger value="dashboard" className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg">
               <Gauge className="h-4 w-4" />
               Dashboard
@@ -129,6 +97,10 @@ const Index = () => {
             <TabsTrigger value="fleet" className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg">
               <Power className="h-4 w-4" />
               Fleet
+            </TabsTrigger>
+            <TabsTrigger value="predictive" className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg">
+              <Activity className="h-4 w-4" />
+              Predictive
             </TabsTrigger>
             <TabsTrigger value="command" className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg">
               <Terminal className="h-4 w-4" />
@@ -157,7 +129,11 @@ const Index = () => {
           </TabsContent>
 
           <TabsContent value="fleet">
-            <RealTimeFleetOverview />
+            <FleetOverview />
+          </TabsContent>
+
+          <TabsContent value="predictive">
+            <PredictiveMaintenance />
           </TabsContent>
 
           <TabsContent value="command">
