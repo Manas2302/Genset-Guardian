@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -15,7 +14,11 @@ import {
   Wrench,
   LogOut,
   Terminal,
-  Zap
+  Zap,
+  BarChart3,
+  Activity,
+  TrendingUp,
+  Cog
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import AuthPage from "@/components/AuthPage";
@@ -26,6 +29,7 @@ import Maintenance from "@/components/Maintenance";
 import Analytics from "@/components/Analytics";
 import SystemSettings from "@/components/SystemSettings";
 import CommandCenter from "@/components/CommandCenter";
+import PredictiveMaintenance from "@/components/PredictiveMaintenance";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -44,6 +48,40 @@ const Index = () => {
   if (!user) {
     return <AuthPage />;
   }
+
+  const menuItems = [
+    { id: "dashboard", label: "Dashboard", icon: <BarChart3 className="h-4 w-4" /> },
+    { id: "fleet", label: "Fleet Overview", icon: <Zap className="h-4 w-4" /> },
+    { id: "real-time", label: "Real-Time Fleet", icon: <Activity className="h-4 w-4" /> },
+    { id: "predictive", label: "Predictive Maintenance", icon: <Wrench className="h-4 w-4" /> },
+    { id: "analytics", label: "Analytics", icon: <TrendingUp className="h-4 w-4" /> },
+    { id: "alerts", label: "Alerts", icon: <AlertTriangle className="h-4 w-4" /> },
+    { id: "maintenance", label: "Maintenance", icon: <Settings className="h-4 w-4" /> },
+    { id: "settings", label: "System Settings", icon: <Cog className="h-4 w-4" /> }
+  ];
+
+  const renderContent = () => {
+    switch (activeView) {
+      case "dashboard":
+        return <Dashboard />;
+      case "fleet":
+        return <FleetOverview />;
+      case "real-time":
+        return <RealTimeFleetOverview />;
+      case "predictive":
+        return <PredictiveMaintenance />;
+      case "analytics":
+        return <Analytics />;
+      case "alerts":
+        return <Alerts />;
+      case "maintenance":
+        return <Maintenance />;
+      case "settings":
+        return <SystemSettings />;
+      default:
+        return <Dashboard />;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
