@@ -33,6 +33,35 @@ const PredictiveMaintenance = () => {
     );
   }
 
+  // Move generateRecommendations function before it's used
+  const generateRecommendations = (riskScore: number, factors: string[]) => {
+    const recommendations = [];
+    
+    if (factors.includes("High runtime hours")) {
+      recommendations.push("Schedule comprehensive engine inspection");
+    }
+    if (factors.includes("High operating temperature")) {
+      recommendations.push("Check cooling system and replace coolant");
+    }
+    if (factors.includes("Low efficiency")) {
+      recommendations.push("Clean air filters and inspect fuel system");
+    }
+    if (factors.includes("Low oil pressure")) {
+      recommendations.push("Change engine oil and replace oil filter");
+    }
+    if (factors.includes("Low coolant level")) {
+      recommendations.push("Top up coolant and check for leaks");
+    }
+    
+    if (riskScore > 70) {
+      recommendations.push("Immediate inspection required");
+    } else if (riskScore > 40) {
+      recommendations.push("Schedule maintenance within 2 weeks");
+    }
+    
+    return recommendations;
+  };
+
   // Calculate maintenance predictions
   const maintenancePredictions = generators.map(gen => {
     const runtimeHours = gen.runtime_hours;
@@ -107,34 +136,6 @@ const PredictiveMaintenance = () => {
       lastMaintenance: gen.last_maintenance_date
     };
   });
-
-  const generateRecommendations = (riskScore: number, factors: string[]) => {
-    const recommendations = [];
-    
-    if (factors.includes("High runtime hours")) {
-      recommendations.push("Schedule comprehensive engine inspection");
-    }
-    if (factors.includes("High operating temperature")) {
-      recommendations.push("Check cooling system and replace coolant");
-    }
-    if (factors.includes("Low efficiency")) {
-      recommendations.push("Clean air filters and inspect fuel system");
-    }
-    if (factors.includes("Low oil pressure")) {
-      recommendations.push("Change engine oil and replace oil filter");
-    }
-    if (factors.includes("Low coolant level")) {
-      recommendations.push("Top up coolant and check for leaks");
-    }
-    
-    if (riskScore > 70) {
-      recommendations.push("Immediate inspection required");
-    } else if (riskScore > 40) {
-      recommendations.push("Schedule maintenance within 2 weeks");
-    }
-    
-    return recommendations;
-  };
 
   // Sort by risk score for priority display
   const sortedPredictions = maintenancePredictions.sort((a, b) => b.riskScore - a.riskScore);
