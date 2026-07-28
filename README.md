@@ -1,4 +1,4 @@
-# Perennial Control Center: Generator Monitoring Dashboard
+# Genset Guardian : Generator Monitoring Dashboard
 
 A UI/UX prototype for real time generator fleet monitoring, built for Perennial Technologies to explore reducing vendor dependency on third party remote monitoring platforms.
 
