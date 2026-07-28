@@ -1,73 +1,37 @@
-# Welcome to your Lovable project
+# Perennial Control Center: Generator Monitoring Dashboard
 
-## Project info
+A UI/UX prototype for real time generator fleet monitoring, built for Perennial Technologies to explore reducing vendor dependency on third party remote monitoring platforms.
 
-**URL**: https://lovable.dev/projects/14dc4448-8169-4eb4-9b67-93e7da058b19
+**Live prototype:** https://genset-guardian-watch.lovable.app/
 
-## How can I edit this code?
+## Overview
 
-There are several ways of editing your application.
+Perennial Technologies manages a fleet of diesel generators deployed across client sites in India. This prototype models what an in house remote monitoring and control platform could look like, covering live fleet status, alerting, remote commands, maintenance scheduling, and operational analytics in a single interface.
 
-**Use Lovable**
+The prototype was presented to engineering leadership at Perennial, who responded positively and expressed interest in taking the concept forward.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/14dc4448-8169-4eb4-9b67-93e7da058b19) and start prompting.
+## Features
 
-Changes made via Lovable will be committed automatically to this repo.
+* **Dashboard:** fleet wide summary of total units online, active power output, active alerts, and system wide efficiency
+* **Fleet:** live cards per generator (power output, load, temperature, voltage, oil pressure, fuel and coolant levels) with remote start/stop controls
+* **Commands:** a remote command center for start/stop/restart actions across the fleet, with an execution log of recent commands and their status
+* **Alerts:** alert management with severity levels (critical/warning/info), an acknowledge and resolve workflow, and filtering
+* **Maintenance:** maintenance scheduling and calendar view, with overdue and due soon tracking per generator
+* **Analytics:** fleet availability, average efficiency, fuel cost per kWh, and MTBF, with charts for fuel consumption, costs, utilization, and maintenance costs over time
+* **Settings:** configurable alert rules and thresholds (for example, low fuel percentage, high temperature in Celsius), notification preferences (email and SMS)
 
-**Use your preferred IDE**
+## How it was built
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+This prototype was built using **Lovable**, an AI assisted app builder, through iterative prompting rather than hand written frontend code. The focus of this project was translating real operational requirements (from hands on generator commissioning and IoT monitoring work) into a coherent, interactive product design covering information architecture, UX flows, and data modeling, rather than backend implementation.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Status
 
-Follow these steps:
+This is a **UI/UX prototype**. All data shown (generator readings, alert history, command logs) is mock/sample data for demonstration purposes; it is not connected to live hardware or a real backend. Buttons and navigation are functional within the app's own state.
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## Background
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Built as part of hands-on work at Perennial Technologies, alongside industrial training on 250 kVA diesel generator commissioning and IoT monitoring device integration (DATA OMS, SGC-120 controller).
 
-# Step 3: Install the necessary dependencies.
-npm i
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
 
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/14dc4448-8169-4eb4-9b67-93e7da058b19) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Built as part of hands-on work at Perennial Technologies, alongside industrial training on 250 kVA diesel generator commissioning and IoT monitoring device integration (DATA OMS, SGC-120 controller).
